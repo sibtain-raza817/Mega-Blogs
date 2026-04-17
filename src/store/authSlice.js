@@ -1,4 +1,4 @@
-import { autoBatchEnhancer, createSlice } from "@reduxjs/toolkit";
+import {createSlice } from "@reduxjs/toolkit";
 
 
 const initialState = {
@@ -23,6 +23,6 @@ const authSlice = createSlice({
 })
 
 
-export const{login, logout} =autoBatchEnhancer.actions;
+export const{login, logout} =authSlice.actions;
 
 export default authSlice.reducer;

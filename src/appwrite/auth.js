@@ -1,27 +1,27 @@
-import config from '../config.js'
+import config from '../config/config.js'
 import { Client, Account, ID } from 'appwrite'
 
-
-export class AuthService{
+export class AuthService {
     client = new Client();
     account;
 
-    constructor(){
+    constructor() {
         this.client
-        .setEndpoint(config.appwriteUrl)
-        .setProject(config.appwriteProjectId);
+            .setEndpoint(config.appwriteUrl)
+            .setProject(config.appwriteProjectId);
+
         this.account = new Account(this.client)
     }
 
-    async createAccount({email, password, name}){
+    async createAccount({ email, password, name }) {
         try {
-            const userAccount = await this.account.create
-            (ID.unique(), email, password, name);
-            if(userAccount){
-                return userAccount;
-                //call another methods
-                return this.login({email, password});
-            }else{
+            const userAccount = await this.account.create(
+                ID.unique(), email, password, name
+            );
+
+            if (userAccount) {
+                return this.login({ email, password });
+            } else {
                 return userAccount;
             }
         } catch (error) {
@@ -29,32 +29,31 @@ export class AuthService{
         }
     }
 
-    async login({email, password}) {
+    async login({ email, password }) {
         try {
-           return await this.account.createEmailSession(email, password);
+            return await this.account.createEmailSession(email, password);
         } catch (error) {
             throw error;
         }
     }
-    async getCurrentUser(){
+
+    async getCurrentUser() {
         try {
             return await this.account.get();
         } catch (error) {
-            throw error;
+            return null;
         }
-        return null;
     }
 
-    async logout(){
+    async logout() {
         try {
             await this.account.deleteSessions('current')
         } catch (error) {
-            console.log("Appwrite service :: logout :: errro", error);
-            
+            console.log("Appwrite service :: logout :: error", error);
         }
     }
 }
 
 const authservice = new AuthService();
 
-export default AuthService
+export default authservice;
